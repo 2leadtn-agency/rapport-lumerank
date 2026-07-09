@@ -13,6 +13,7 @@ import Layout from "../layouts/Layout.astro";
         <p class="subtitle">Rapport de performance</p>
         <h1 class="client-name" id="client-name">Votre aperçu</h1>
         <p class="target-url" id="target-url"></p>
+        <button class="view-apercu-btn" id="view-apercu-btn" type="button">← Voir l'aperçu</button>
       </div>
     </header>
 
@@ -143,6 +144,23 @@ import Layout from "../layouts/Layout.astro";
   .target-url {
     font-size: 0.85rem;
     color: #737373;
+  }
+
+  .view-apercu-btn {
+    margin-top: 1rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-family: inherit;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .view-apercu-btn:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
   }
 
   .main {
@@ -562,5 +580,15 @@ import Layout from "../layouts/Layout.astro";
     }
   }
 
+  function setupViewApercuButton() {
+    const btn = document.getElementById("view-apercu-btn");
+    if (!btn) return;
+    btn.addEventListener("click", () => {
+      const client = new URLSearchParams(window.location.search).get("client");
+      window.open("https://" + client + ".lumerank.fr", "_blank");
+    });
+  }
+
   loadReport();
+  setupViewApercuButton();
 </script>
