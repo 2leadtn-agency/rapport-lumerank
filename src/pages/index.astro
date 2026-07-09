@@ -37,22 +37,22 @@ import Layout from "../layouts/Layout.astro";
       </section>
 
       <section class="metrics">
-        <h2 class="section-title">Métriques clés</h2>
-        <div class="metrics-row" id="metrics-row">
+        <h2 class="section-title">L'expérience de vos visiteurs</h2>
+        <div class="metrics-row">
           <div class="metric-card">
-            <span class="metric-badge" id="metric-interactive-badge"></span>
-            <p class="metric-label">Temps de chargement</p>
-            <p class="metric-desc" id="metric-interactive-desc"></p>
+            <span class="metric-icon">🚀</span>
+            <p class="metric-title">Aucune attente</p>
+            <p class="metric-desc">Vos visiteurs passent directement à l'action, sans frustration</p>
           </div>
           <div class="metric-card">
-            <span class="metric-badge" id="metric-fcp-badge"></span>
-            <p class="metric-label">First Contentful Paint</p>
-            <p class="metric-desc" id="metric-fcp-desc"></p>
+            <span class="metric-icon">👁️</span>
+            <p class="metric-title">Impact immédiat</p>
+            <p class="metric-desc">Votre site s'affiche instantanément, aucun écran vide qui fait fuir</p>
           </div>
           <div class="metric-card">
-            <span class="metric-badge" id="metric-si-badge"></span>
-            <p class="metric-label">Speed Index</p>
-            <p class="metric-desc" id="metric-si-desc"></p>
+            <span class="metric-icon">✨</span>
+            <p class="metric-title">Navigation fluide</p>
+            <p class="metric-desc">Une expérience qui inspire confiance dès la première seconde</p>
           </div>
         </div>
       </section>
@@ -364,54 +364,32 @@ import Layout from "../layouts/Layout.astro";
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 16px;
-    padding: 1.25rem;
+    padding: 1.5rem;
+    text-align: center;
   }
 
-  .metric-badge {
+  .metric-icon {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 199, 0, 0.15);
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .metric-title {
     font-family: "Plus Jakarta Sans", sans-serif;
-    padding: 4px 10px;
-    border-radius: 999px;
-    margin-bottom: 0.6rem;
-  }
-
-  .metric-badge:empty {
-    display: none;
-  }
-
-  .metric-badge.badge-excellent {
-    background: #d1fae5;
-    color: #047857;
-  }
-
-  .metric-badge.badge-rapide {
-    background: #dcfce7;
-    color: #15803d;
-  }
-
-  .metric-badge.badge-correct {
-    background: #fef3c7;
-    color: #b45309;
-  }
-
-  .metric-badge.badge-ameliorer {
-    background: #fee2e2;
-    color: #b91c1c;
-  }
-
-  .metric-label {
-    font-size: 0.8rem;
-    color: #737373;
+    font-weight: 800;
+    font-size: 1rem;
     margin-bottom: 0.4rem;
   }
 
   .metric-desc {
-    font-size: 0.78rem;
-    color: #a3a3a3;
+    font-size: 0.85rem;
+    color: #737373;
   }
 
   .comparison-card {
@@ -559,56 +537,6 @@ import Layout from "../layouts/Layout.astro";
     return "#DC2626";
   }
 
-  type MetricTier = "good" | "correct" | "ameliorer";
-
-  function metricBadge(seconds: number): { label: string; icon: string; className: string; tier: MetricTier } {
-    if (seconds <= 1.8) return { label: "Excellent", icon: "✓", className: "badge-excellent", tier: "good" };
-    if (seconds <= 3) return { label: "Rapide", icon: "⚡", className: "badge-rapide", tier: "good" };
-    if (seconds <= 4.5) return { label: "Correct", icon: "~", className: "badge-correct", tier: "correct" };
-    return { label: "À améliorer", icon: "↑", className: "badge-ameliorer", tier: "ameliorer" };
-  }
-
-  const METRIC_BENEFIT_PHRASES: Record<string, Record<MetricTier, string>> = {
-    interactive: {
-      good: "Vos visiteurs n'attendent pas — ils passent directement à l'action",
-      correct: "Un temps d'attente raisonnable, sans effet négatif sur vos visiteurs",
-      ameliorer: "Des améliorations possibles pour réduire l'attente de vos visiteurs",
-    },
-    fcp: {
-      good: "Votre site rassure dès la première seconde, aucun écran vide",
-      correct: "Votre contenu s'affiche rapidement, sans délai gênant",
-      ameliorer: "Le premier affichage peut encore gagner en rapidité",
-    },
-    si: {
-      good: "Une navigation fluide qui donne confiance à vos futurs clients",
-      correct: "Une navigation fluide pour la majorité de vos visiteurs",
-      ameliorer: "Des optimisations disponibles pour fluidifier la navigation",
-    },
-  };
-
-  function setMetric(metricKey: string, descElId: string, badgeElId: string, audit: any) {
-    const descEl = document.getElementById(descElId);
-    const badgeEl = document.getElementById(badgeElId);
-
-    const numericValue = audit?.numericValue;
-
-    if (typeof numericValue === "number") {
-      const badge = metricBadge(numericValue / 1000);
-
-      if (badgeEl) {
-        badgeEl.textContent = `${badge.icon} ${badge.label}`;
-        badgeEl.className = `metric-badge ${badge.className}`;
-      }
-
-      if (descEl) descEl.textContent = METRIC_BENEFIT_PHRASES[metricKey]?.[badge.tier] ?? "";
-    } else {
-      if (badgeEl) {
-        badgeEl.textContent = "";
-        badgeEl.className = "metric-badge";
-      }
-      if (descEl) descEl.textContent = "";
-    }
-  }
 
   function buildScoreCard(label: string, score: number | null): string {
     const value = score === null ? 0 : Math.round(score);
@@ -680,6 +608,8 @@ import Layout from "../layouts/Layout.astro";
       const data = await res.json();
 
       const categories = data?.lighthouseResult?.categories;
+      // Kept for potential future use — no longer rendered in the "L'expérience
+      // de vos visiteurs" section, which is now static/benefit-only.
       const audits = data?.lighthouseResult?.audits;
 
       console.log(categories);
@@ -699,10 +629,6 @@ import Layout from "../layouts/Layout.astro";
           buildScoreCard("Bonnes pratiques", bestPractices) +
           buildScoreCard("SEO", seo);
       }
-
-      setMetric("interactive", "metric-interactive-desc", "metric-interactive-badge", audits?.interactive);
-      setMetric("fcp", "metric-fcp-desc", "metric-fcp-badge", audits?.["first-contentful-paint"]);
-      setMetric("si", "metric-si-desc", "metric-si-badge", audits?.["speed-index"]);
 
       const comparisonFill = document.getElementById("comparison-fill");
       const comparisonScore = document.getElementById("comparison-score");
