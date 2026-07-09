@@ -460,7 +460,7 @@ import Layout from "../layouts/Layout.astro";
 
     const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(
       targetUrl
-    )}&strategy=mobile`;
+    )}&strategy=mobile&key=AIzaSyBS2lN1DAzFuUw1KgRSVLbVKuq19WUlV3M`;
 
     try {
       const res = await fetch(apiUrl);
