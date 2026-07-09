@@ -40,16 +40,19 @@ import Layout from "../layouts/Layout.astro";
         <h2 class="section-title">Métriques clés</h2>
         <div class="metrics-row" id="metrics-row">
           <div class="metric-card">
+            <span class="metric-badge" id="metric-interactive-badge"></span>
             <p class="metric-label">Temps de chargement</p>
             <p class="metric-value" id="metric-interactive">—</p>
             <p class="metric-desc">Temps pour que la page devienne interactive</p>
           </div>
           <div class="metric-card">
+            <span class="metric-badge" id="metric-fcp-badge"></span>
             <p class="metric-label">First Contentful Paint</p>
             <p class="metric-value" id="metric-fcp">—</p>
             <p class="metric-desc">Premier contenu affiché à l'écran</p>
           </div>
           <div class="metric-card">
+            <span class="metric-badge" id="metric-si-badge"></span>
             <p class="metric-label">Speed Index</p>
             <p class="metric-value" id="metric-si">—</p>
             <p class="metric-desc">Vitesse d'affichage visuel de la page</p>
@@ -367,6 +370,42 @@ import Layout from "../layouts/Layout.astro";
     padding: 1.25rem;
   }
 
+  .metric-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+  }
+
+  .metric-badge:empty {
+    display: none;
+  }
+
+  .metric-badge.badge-excellent {
+    background: #d1fae5;
+    color: #047857;
+  }
+
+  .metric-badge.badge-rapide {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .metric-badge.badge-correct {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  .metric-badge.badge-ameliorer {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
   .metric-label {
     font-size: 0.8rem;
     color: #737373;
@@ -374,8 +413,9 @@ import Layout from "../layouts/Layout.astro";
   }
 
   .metric-value {
-    font-size: 1.5rem;
-    font-weight: 800;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #9ca3af;
     font-family: "Plus Jakarta Sans", sans-serif;
     margin-bottom: 0.4rem;
   }
@@ -530,6 +570,32 @@ import Layout from "../layouts/Layout.astro";
     return "#DC2626";
   }
 
+  function metricBadge(seconds: number): { label: string; icon: string; className: string } {
+    if (seconds <= 1.8) return { label: "Excellent", icon: "✓", className: "badge-excellent" };
+    if (seconds <= 3) return { label: "Rapide", icon: "⚡", className: "badge-rapide" };
+    if (seconds <= 4.5) return { label: "Correct", icon: "~", className: "badge-correct" };
+    return { label: "À améliorer", icon: "↑", className: "badge-ameliorer" };
+  }
+
+  function setMetric(valueElId: string, badgeElId: string, audit: any) {
+    const valueEl = document.getElementById(valueElId);
+    const badgeEl = document.getElementById(badgeElId);
+
+    if (valueEl) valueEl.textContent = audit?.displayValue ?? "—";
+
+    if (badgeEl) {
+      const numericValue = audit?.numericValue;
+      if (typeof numericValue === "number") {
+        const badge = metricBadge(numericValue / 1000);
+        badgeEl.textContent = `${badge.icon} ${badge.label}`;
+        badgeEl.className = `metric-badge ${badge.className}`;
+      } else {
+        badgeEl.textContent = "";
+        badgeEl.className = "metric-badge";
+      }
+    }
+  }
+
   function buildScoreCard(label: string, score: number | null): string {
     const value = score === null ? 0 : Math.round(score);
     const color = score === null ? "#a3a3a3" : scoreColor(value);
@@ -620,13 +686,9 @@ import Layout from "../layouts/Layout.astro";
           buildScoreCard("SEO", seo);
       }
 
-      const interactiveEl = document.getElementById("metric-interactive");
-      const fcpEl = document.getElementById("metric-fcp");
-      const siEl = document.getElementById("metric-si");
-
-      if (interactiveEl) interactiveEl.textContent = audits?.interactive?.displayValue ?? "—";
-      if (fcpEl) fcpEl.textContent = audits?.["first-contentful-paint"]?.displayValue ?? "—";
-      if (siEl) siEl.textContent = audits?.["speed-index"]?.displayValue ?? "—";
+      setMetric("metric-interactive", "metric-interactive-badge", audits?.interactive);
+      setMetric("metric-fcp", "metric-fcp-badge", audits?.["first-contentful-paint"]);
+      setMetric("metric-si", "metric-si-badge", audits?.["speed-index"]);
 
       const comparisonFill = document.getElementById("comparison-fill");
       const comparisonScore = document.getElementById("comparison-score");
