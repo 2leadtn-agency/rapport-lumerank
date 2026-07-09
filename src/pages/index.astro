@@ -1,12 +1,69 @@
 ---
+import Layout from "../layouts/Layout.astro";
 ---
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apercu</title>
-</head>
-<body>
-  <h1>Apercu en cours de construction</h1>
-</body>
-</html>
+
+<Layout title="Lumerank — Aperçu">
+  <main class="wrap">
+    <div class="logo">
+      <span class="logo-lume">Lume</span><span class="logo-rank">rank</span>
+    </div>
+    <h1>Rapport de performance</h1>
+    <p>
+      Accédez à un rapport en visitant
+      <code>/nom-du-client</code>, par exemple
+      <a href="/boulangerie-athens">/boulangerie-athens</a>.
+    </p>
+  </main>
+</Layout>
+
+<style>
+  .wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: #0a0a0a;
+    color: #fff;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+
+  .logo-lume {
+    color: #fff;
+  }
+
+  .logo-rank {
+    color: #ffc700;
+  }
+
+  h1 {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 800;
+    font-size: 1.75rem;
+  }
+
+  p {
+    color: #a3a3a3;
+    max-width: 420px;
+  }
+
+  code {
+    background: #1a1a1a;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    color: #ffc700;
+  }
+
+  a {
+    color: #ffc700;
+    text-decoration: underline;
+  }
+</style>
