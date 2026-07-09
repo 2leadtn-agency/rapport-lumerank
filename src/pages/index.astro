@@ -4,6 +4,7 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout title="Rapport de performance — Lumerank">
   <div id="report">
+    <div class="top-progress" id="top-progress"></div>
     <header class="header">
       <div class="header-inner">
         <div class="logo">
@@ -18,24 +19,16 @@ import Layout from "../layouts/Layout.astro";
     <main class="main">
       <section class="scores" aria-live="polite">
         <h2 class="section-title">Scores Lighthouse</h2>
-        <div class="score-grid" id="score-grid">
-          <div class="score-card skeleton">
-            <div class="skeleton-ring"></div>
-            <div class="skeleton-label"></div>
+        <div class="loader" id="loader">
+          <div class="loader-logo">
+            <span class="logo-lume">Lume</span><span class="logo-rank">rank</span>
           </div>
-          <div class="score-card skeleton">
-            <div class="skeleton-ring"></div>
-            <div class="skeleton-label"></div>
-          </div>
-          <div class="score-card skeleton">
-            <div class="skeleton-ring"></div>
-            <div class="skeleton-label"></div>
-          </div>
-          <div class="score-card skeleton">
-            <div class="skeleton-ring"></div>
-            <div class="skeleton-label"></div>
-          </div>
+          <p class="loader-text">
+            Analyse en cours<span class="dot dot-1">.</span><span class="dot dot-2">.</span><span class="dot dot-3">.</span>
+          </p>
+          <p class="loader-sub">Cela peut prendre 10 à 20 secondes</p>
         </div>
+        <div class="score-grid" id="score-grid"></div>
         <p class="error-message" id="error-message" hidden>
           Impossible de charger les scores — réessayez dans quelques instants.
         </p>
@@ -173,9 +166,17 @@ import Layout from "../layouts/Layout.astro";
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
-  .score-card {
+  /*
+    :global() is required here: score cards are injected at runtime via
+    innerHTML (see buildScoreCard in the script below), so Astro's scoped
+    CSS attribute never gets attached to them — unscoped rules are the only
+    ones that reach dynamically-created markup.
+  */
+  :global(.score-card) {
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 16px;
@@ -185,62 +186,104 @@ import Layout from "../layouts/Layout.astro";
     align-items: center;
     text-align: center;
     gap: 0.75rem;
-  }
-
-  .score-ring-wrap {
-    position: relative;
-    width: 120px;
-    height: 120px;
-  }
-
-  .score-ring-wrap svg {
+    max-width: 160px;
     width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
+    margin: 0 auto;
   }
 
-  .score-number {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.25rem;
-    font-weight: 800;
-    font-family: "Plus Jakarta Sans", sans-serif;
+  :global(.score-ring) {
+    width: 100%;
+    height: auto;
+    max-width: 120px;
+    display: block;
+    margin: 0 auto;
   }
 
-  .score-label {
+  :global(.score-label) {
     font-size: 0.9rem;
     font-weight: 700;
     color: #404040;
   }
 
-  .skeleton {
-    animation: pulse 1.4s ease-in-out infinite;
+  .loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 3rem 1rem;
+    text-align: center;
   }
 
-  .skeleton-ring {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: #e5e7eb;
+  .loader-logo {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
   }
 
-  .skeleton-label {
-    width: 70%;
-    height: 0.9rem;
-    border-radius: 6px;
-    background: #e5e7eb;
+  .loader-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #404040;
   }
 
-  @keyframes pulse {
+  .dot {
+    display: inline-block;
+    opacity: 0;
+  }
+
+  .dot-1 {
+    animation: dotFlash 1.4s infinite 0s;
+  }
+
+  .dot-2 {
+    animation: dotFlash 1.4s infinite 0.2s;
+  }
+
+  .dot-3 {
+    animation: dotFlash 1.4s infinite 0.4s;
+  }
+
+  @keyframes dotFlash {
     0%,
+    80%,
     100% {
+      opacity: 0;
+    }
+    40% {
       opacity: 1;
     }
-    50% {
-      opacity: 0.45;
+  }
+
+  .loader-sub {
+    font-size: 0.8rem;
+    color: #a3a3a3;
+  }
+
+  .top-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: #ffc700;
+    z-index: 9999;
+    animation: progressFill 15s ease-out forwards;
+  }
+
+  .top-progress.done {
+    animation: none;
+    width: 100%;
+    transition: width 0.3s ease, opacity 0.4s ease 0.3s;
+    opacity: 0;
+  }
+
+  @keyframes progressFill {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 85%;
     }
   }
 
@@ -376,22 +419,17 @@ import Layout from "../layouts/Layout.astro";
 
   @media (max-width: 560px) {
     .score-grid {
-      grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
+      max-width: 320px;
     }
 
-    .score-card {
+    :global(.score-card) {
       padding: 1rem;
+      max-width: 130px;
     }
 
-    .score-ring-wrap,
-    .skeleton-ring {
-      width: 90px;
-      height: 90px;
-    }
-
-    .score-number {
-      font-size: 1.6rem;
+    :global(.score-ring) {
+      max-width: 100px;
     }
 
     .comparison-card {
@@ -422,28 +460,43 @@ import Layout from "../layouts/Layout.astro";
 
     return `
       <div class="score-card">
-        <div class="score-ring-wrap">
-          <svg viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="${radius}" fill="none" stroke="#e5e7eb" stroke-width="10" />
-            <circle
-              cx="60" cy="60" r="${radius}" fill="none"
-              stroke="${color}" stroke-width="10"
-              stroke-linecap="round"
-              stroke-dasharray="${circumference}"
-              stroke-dashoffset="${offset}"
-              style="transition: stroke-dashoffset 1s ease;"
-            />
-          </svg>
-          <span class="score-number" style="color: ${color};">${score === null ? "—" : value}</span>
-        </div>
+        <svg class="score-ring" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="${radius}" fill="none" stroke="#e5e7eb" stroke-width="10" />
+          <circle
+            cx="60" cy="60" r="${radius}" fill="none"
+            stroke="${color}" stroke-width="10"
+            stroke-linecap="round"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${offset}"
+            transform="rotate(-90 60 60)"
+            style="transition: stroke-dashoffset 1s ease;"
+          />
+          <text
+            x="60" y="61" text-anchor="middle" dominant-baseline="middle"
+            font-size="24" font-weight="800" font-family="'Plus Jakarta Sans', sans-serif"
+            fill="${color}"
+          >${score === null ? "—" : value}</text>
+        </svg>
         <p class="score-label">${label}</p>
       </div>
     `;
   }
 
-  function renderSkeletonError() {
+  function finishProgressBar() {
+    const bar = document.getElementById("top-progress");
+    if (bar) bar.classList.add("done");
+  }
+
+  function hideLoader() {
+    const loader = document.getElementById("loader");
+    if (loader) loader.hidden = true;
+  }
+
+  function showError() {
     const errorEl = document.getElementById("error-message");
     const grid = document.getElementById("score-grid");
+    hideLoader();
+    finishProgressBar();
     if (errorEl) errorEl.hidden = false;
     if (grid) grid.innerHTML = "";
   }
@@ -460,7 +513,7 @@ import Layout from "../layouts/Layout.astro";
 
     const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(
       targetUrl
-    )}&strategy=mobile&key=AIzaSyBS2lN1DAzFuUw1KgRSVLbVKuq19WUlV3M`;
+    )}&strategy=mobile&category=performance&category=accessibility&category=best-practices&category=seo&key=AIzaSyBS2lN1DAzFuUw1KgRSVLbVKuq19WUlV3M`;
 
     try {
       const res = await fetch(apiUrl);
@@ -469,6 +522,8 @@ import Layout from "../layouts/Layout.astro";
 
       const categories = data?.lighthouseResult?.categories;
       const audits = data?.lighthouseResult?.audits;
+
+      console.log(categories);
 
       if (!categories) throw new Error("Missing categories in response");
 
@@ -498,9 +553,12 @@ import Layout from "../layouts/Layout.astro";
       const comparisonScore = document.getElementById("comparison-score");
       if (comparisonFill) (comparisonFill as HTMLElement).style.width = `${performance}%`;
       if (comparisonScore) comparisonScore.textContent = `${performance}/100`;
+
+      hideLoader();
+      finishProgressBar();
     } catch (err) {
       console.error(err);
-      renderSkeletonError();
+      showError();
     }
   }
 
