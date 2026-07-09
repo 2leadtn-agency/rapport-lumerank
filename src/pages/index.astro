@@ -36,7 +36,7 @@ import Layout from "../layouts/Layout.astro";
         </p>
       </section>
 
-      <section class="metrics">
+      <section class="metrics" id="metrics-section" hidden>
         <h2 class="section-title">L'expérience de vos visiteurs</h2>
         <div class="metrics-row">
           <div class="metric-card">
@@ -637,6 +637,9 @@ import Layout from "../layouts/Layout.astro";
 
       hideLoader();
       finishProgressBar();
+
+      const metricsSection = document.getElementById("metrics-section");
+      if (metricsSection) metricsSection.hidden = false;
     } catch (err) {
       console.error(err);
       showError();
