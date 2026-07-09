@@ -27,7 +27,8 @@ import Layout from "../layouts/Layout.astro";
           <p class="loader-text">
             Analyse en cours<span class="dot dot-1">.</span><span class="dot dot-2">.</span><span class="dot dot-3">.</span>
           </p>
-          <p class="loader-sub">Cela peut prendre 10 à 20 secondes</p>
+          <p class="loader-sub">Cela peut prendre 5 à 10 secondes</p>
+          <p class="loader-attribution">Scores calculés par Google PageSpeed Insights</p>
         </div>
         <div class="score-grid" id="score-grid"></div>
         <p class="error-message" id="error-message" hidden>
@@ -234,6 +235,10 @@ import Layout from "../layouts/Layout.astro";
   }
 
   .loader-logo {
+    background: #0a0a0a;
+    padding: 6px 14px;
+    border-radius: 8px;
+    display: inline-block;
     font-family: "Plus Jakarta Sans", sans-serif;
     font-weight: 800;
     font-size: 1rem;
@@ -278,6 +283,13 @@ import Layout from "../layouts/Layout.astro";
     color: #a3a3a3;
   }
 
+  .loader-attribution {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    margin-top: 6px;
+    font-style: italic;
+  }
+
   .top-progress {
     position: fixed;
     top: 0;
@@ -286,7 +298,7 @@ import Layout from "../layouts/Layout.astro";
     width: 0%;
     background: #ffc700;
     z-index: 9999;
-    animation: progressFill 15s ease-out forwards;
+    animation: progressFill 8s ease-out forwards;
   }
 
   .top-progress.done {
