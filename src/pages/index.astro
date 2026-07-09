@@ -8,7 +8,7 @@ import Layout from "../layouts/Layout.astro";
     <header class="header">
       <div class="header-inner">
         <div class="logo">
-          <span class="logo-lume">Lume</span><span class="logo-rank">rank</span>
+          <img src="/Lumerank-logo-blanc-02.png" alt="Lumerank" class="logo-header" />
         </div>
         <p class="subtitle">Rapport de performance</p>
         <h1 class="client-name" id="client-name">Votre aperçu</h1>
@@ -22,7 +22,7 @@ import Layout from "../layouts/Layout.astro";
         <h2 class="section-title">Scores Lighthouse</h2>
         <div class="loader" id="loader">
           <div class="loader-logo">
-            <span class="logo-lume">Lume</span><span class="logo-rank">rank</span>
+            <img src="/Lumerank-logo-blanc-02.png" alt="Lumerank" class="logo-header" />
           </div>
           <p class="loader-text">
             Analyse en cours<span class="dot dot-1">.</span><span class="dot dot-2">.</span><span class="dot dot-3">.</span>
@@ -113,18 +113,12 @@ import Layout from "../layouts/Layout.astro";
   }
 
   .logo {
-    font-family: "Plus Jakarta Sans", sans-serif;
-    font-weight: 800;
-    font-size: 1.1rem;
     margin-bottom: 1.5rem;
   }
 
-  .logo-lume {
-    color: #fff;
-  }
-
-  .logo-rank {
-    color: #ffc700;
+  .logo-header {
+    height: 32px;
+    width: auto;
   }
 
   .subtitle {
@@ -239,9 +233,11 @@ import Layout from "../layouts/Layout.astro";
     padding: 6px 14px;
     border-radius: 8px;
     display: inline-block;
-    font-family: "Plus Jakarta Sans", sans-serif;
-    font-weight: 800;
-    font-size: 1rem;
+  }
+
+  .loader-logo .logo-header {
+    height: 24px;
+    width: auto;
   }
 
   .loader-text {
