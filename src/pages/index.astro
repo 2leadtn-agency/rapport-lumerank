@@ -19,7 +19,7 @@ import Layout from "../layouts/Layout.astro";
 
     <main class="main">
       <section class="scores" aria-live="polite">
-        <h2 class="section-title">Scores Lighthouse</h2>
+        <h2 class="section-title" id="scores-title" hidden>Scores Lighthouse</h2>
         <div class="loader" id="loader">
           <div class="loader-logo">
             <img src="/Lumerank-logo-blanc-02.png" alt="Lumerank" class="logo-header" />
@@ -533,8 +533,9 @@ import Layout from "../layouts/Layout.astro";
 
   function scoreColor(score: number): string {
     if (score >= 90) return "#15803D";
-    if (score >= 50) return "#D97706";
-    return "#DC2626";
+    if (score >= 70) return "#22C55E";
+    if (score >= 50) return "#F59E0B";
+    return "#FB923C";
   }
 
 
@@ -639,6 +640,9 @@ import Layout from "../layouts/Layout.astro";
 
       hideLoader();
       finishProgressBar();
+
+      const scoresTitle = document.getElementById("scores-title");
+      if (scoresTitle) scoresTitle.hidden = false;
 
       const metricsSection = document.getElementById("metrics-section");
       if (metricsSection) metricsSection.hidden = false;
