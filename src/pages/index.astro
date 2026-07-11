@@ -57,11 +57,11 @@ import Layout from "../layouts/Layout.astro";
         </div>
       </section>
 
-      <section class="comparison">
+      <section class="comparison" id="comparison-section" hidden>
         <h2 class="section-title">La différence Lumerank</h2>
         <div class="comparison-card">
           <div class="comparison-side">
-            <p class="comparison-label">Site WordPress moyen</p>
+            <p class="comparison-label">Site classique non optimisé</p>
             <div class="bar-track">
               <div class="bar-fill bar-red" style="width: 35%"></div>
             </div>
@@ -630,16 +630,21 @@ import Layout from "../layouts/Layout.astro";
           buildScoreCard("SEO", seo);
       }
 
+      const scoreLumerank = Math.round((performance + accessibility + bestPractices + seo) / 4);
+
       const comparisonFill = document.getElementById("comparison-fill");
       const comparisonScore = document.getElementById("comparison-score");
-      if (comparisonFill) (comparisonFill as HTMLElement).style.width = `${performance}%`;
-      if (comparisonScore) comparisonScore.textContent = `${performance}/100`;
+      if (comparisonFill) (comparisonFill as HTMLElement).style.width = `${scoreLumerank}%`;
+      if (comparisonScore) comparisonScore.textContent = `${scoreLumerank}/100`;
 
       hideLoader();
       finishProgressBar();
 
       const metricsSection = document.getElementById("metrics-section");
       if (metricsSection) metricsSection.hidden = false;
+
+      const comparisonSection = document.getElementById("comparison-section");
+      if (comparisonSection) comparisonSection.hidden = false;
     } catch (err) {
       console.error(err);
       showError();
